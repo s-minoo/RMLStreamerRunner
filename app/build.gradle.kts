@@ -24,6 +24,13 @@ dependencies {
     // Use Scala 2.13 in our library project
     implementation("org.scala-lang:scala-library:2.13.6")
 
+    implementation("org.apache.jena:apache-jena-libs:4.5.0@pom")
+    implementation("org.apache.jena:jena-core:4.5.0")
+    implementation("org.apache.jena:jena-arq:4.5.0")
+    // https://mvnrepository.com/artifact/com.github.scopt/scopt
+    implementation("com.github.scopt:scopt_2.13:4.0.1")
+
+
     // This dependency is used by the application.
     implementation("com.google.guava:guava:30.1.1-jre")
 }
