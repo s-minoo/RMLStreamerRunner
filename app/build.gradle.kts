@@ -27,12 +27,15 @@ dependencies {
     implementation("org.apache.jena:apache-jena-libs:4.5.0@pom")
     implementation("org.apache.jena:jena-core:4.5.0")
     implementation("org.apache.jena:jena-arq:4.5.0")
+
     // https://mvnrepository.com/artifact/com.github.scopt/scopt
     implementation("com.github.scopt:scopt_2.13:4.0.1")
 
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core
+    implementation("com.fasterxml.jackson.core:jackson-core:2.13.2")
 
-    // This dependency is used by the application.
-    implementation("com.google.guava:guava:30.1.1-jre")
+
+
 }
 
 testing {
