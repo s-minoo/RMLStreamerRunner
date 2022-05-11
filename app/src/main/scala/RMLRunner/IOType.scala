@@ -5,15 +5,14 @@ import scala.jdk.CollectionConverters._
 
 sealed trait IOType
 
-case class NullIO() extends IOType
 case class KafkaIO(
     hostIp: List[String],
     topic: String,
     groupId: Option[String],
     partitionId: Option[String]
 ) extends IOType
-
 case class FileIO(fileName: String) extends IOType
+case class StdIO() extends IOType
 
 object IOType {
 
@@ -40,6 +39,7 @@ object IOType {
     typ match {
       case "kafka" => parseKafka(config)
       case "file" => FileIO(config.get("filename").asText())
+      case _ => StdIO()
     }
   }
 }
