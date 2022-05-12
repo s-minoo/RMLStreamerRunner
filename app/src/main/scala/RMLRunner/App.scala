@@ -67,8 +67,6 @@ object App {
       case _           =>
     }
 
-    println(greeting())
   }
 
-  def greeting(): String = "Hello, world!"
 }
