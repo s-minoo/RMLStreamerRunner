@@ -36,6 +36,20 @@ case class RMLHandler(val baseURI: String) {
       node: Resource
   ): Unit = {}
 
+
+  /** Updates the given RML model with the given I/O type and write it using the writer
+    * 
+    * This function has a side-effect of modifying the RML model in-place. Becareful 
+    * if you need the model to be immutable. 
+    * 
+    * Currently only supports changing of logical sources with the given [[inputType]].
+    * TODO: also support output (logical targets) 
+    *
+    * @param model Jena model representing the RML document
+    * @param inputType The input logical source type. See [[RMLRunner.IOType]]
+    * @param outputType The output logical target type. 
+    * @param writer Writer to be used to serialize the updated RML Jena model 
+    */
   def updateModel(
       model: Model,
       inputType: IOType,
