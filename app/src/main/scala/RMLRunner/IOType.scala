@@ -14,6 +14,7 @@ case class KafkaIO(
     groupId: Option[String],
     partitionId: Option[String]
 ) extends IOType
+case class TcpIO(hostIp: String) extends IOType
 case class FileIO(fileName: String) extends IOType
 case class StdIO() extends IOType
 
@@ -42,6 +43,7 @@ object IOType {
     typ match {
       case "kafka" => parseKafka(config)
       case "file" => FileIO(config.get("filename").asText())
+      case "tcp"  => TcpIO(config.get("hostname").asText())
       case _ => StdIO()
     }
   }

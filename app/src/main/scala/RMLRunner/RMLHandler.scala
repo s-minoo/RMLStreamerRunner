@@ -75,6 +75,17 @@ case class RMLHandler(val baseURI: String) {
     logicalSources
       .forEach(s => {
         inputType match {
+          case TcpIO(hostport) =>{
+            val sourceBNode = model.createResource()
+            s.addProperty(sourceProperty, sourceBNode) 
+            val Array(hostname, port) = hostport.split(":")
+            sourceBNode.addProperty(model.createProperty(RMLSVoc.Property.HOSTNAME),
+            hostname
+            )
+            sourceBNode.addProperty(model.createProperty(RMLSVoc.Property.PORT),
+            port
+            )
+          }
           case FileIO(fileName) => {
             s.addProperty(sourceProperty, fileName)
           }
