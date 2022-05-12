@@ -2,8 +2,11 @@ package RMLRunner
 
 import com.fasterxml.jackson.databind.JsonNode
 import scala.jdk.CollectionConverters._
+import org.apache.jena.rdf.model.Statement
+import org.apache.jena.rdf.model.Model
+import org.apache.jena.rdf.model.ModelFactory
 
-sealed trait IOType
+sealed trait IOType 
 
 case class KafkaIO(
     hostIp: List[String],

@@ -15,9 +15,9 @@
   rml:logicalSource [ 
     rml:source [ 
       rdf:type rmls:KafkaStream ;  
-      rmls:broker "localhost:9092"; 
-      rmls:groupId "2";  
-      rmls:topic "demo"         
+      rmls:broker "localhost:9000"; 
+      rmls:groupId "groupaUno";  
+      rmls:topic "epicTopic"         
     ];
 
     rml:referenceFormulation ql:JSONPath;
