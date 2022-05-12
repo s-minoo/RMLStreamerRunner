@@ -6,6 +6,9 @@
  * User Manual available at https://docs.gradle.org/7.4/userguide/building_java_projects.html
  * This project uses @Incubating APIs which are subject to change.
  */
+ 
+
+version = "0.1.0"
 
 plugins {
     // Apply the scala Plugin to add support for Scala.
@@ -63,4 +66,21 @@ testing {
 application {
     // Define the main class for the application.
     mainClass.set("RMLRunner.App")
+}
+
+tasks.shadowJar{
+    manifest {
+        attributes(mapOf("Implementation-Title" to rootProject.name,
+                         "Implementation-Version" to project.version))
+    }
+    archiveBaseName.set(rootProject.name)
+
+}
+
+tasks.jar {
+    manifest {
+        attributes(mapOf("Implementation-Title" to rootProject.name,
+                         "Implementation-Version" to project.version))
+    }
+    archiveBaseName.set(rootProject.name)
 }
