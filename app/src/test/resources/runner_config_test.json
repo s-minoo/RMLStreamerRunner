@@ -1,0 +1,68 @@
+{
+    "processorConfig": {
+        "id": "RMLStep",
+        "runnerId": "RMLStreamerRunner",
+        "config": {
+            "bulk": true
+        },
+        "args": [
+            {
+                "id": "rmlmapping",
+                "type": "string"
+            },
+            {
+                "id": "inputStream",
+                "type": "channel"
+            },
+            {
+                "id": "outputStream",
+                "type": "channel"
+            }
+        ]
+    },
+    "args": {
+        "rmlmapping": "mapping.ttl",
+        "inputStream": [
+            {
+                "id": "rmls:logicalSource#1",
+                "type": "kafka",
+                "config": {
+                    "topic": {
+                        "name": "epicTopic"
+                    },
+                    "consumer": {
+                        "groupId": "group1"
+                    },
+                    "producer": {},
+                    "broker": {
+                        "hosts": [
+                            "localhost:9092"
+                        ],
+                        "clientId": "myClient"
+                    }
+                }
+            }
+        ],
+        "outputStream": [
+            {
+                "id": "rmls:logicaltarget#1",
+                "type": "kafka",
+                "config": {
+                    "topic": {
+                        "name": "epicTopic"
+                    },
+                    "consumer": {
+                        "groupId": "group1"
+                    },
+                    "producer": {},
+                    "broker": {
+                        "hosts": [
+                            "localhost:9092"
+                        ],
+                        "clientId": "myClient"
+                    }
+                }
+            }
+        ]
+    }
+}

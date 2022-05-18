@@ -15,9 +15,10 @@ import com.fasterxml.jackson.databind.JsonNode
 import sys.process._
 import java.nio.file.Paths
 import java.nio.file.StandardOpenOption
+import java.io.File
 
 case class RunnerCLIConfig(
-    jsonConfigFile: String = "",
+    jsonConfigFile: File = new File(""),
     outputFile: String = "output_cli.txt"
 )
 
@@ -48,7 +49,7 @@ object App {
             if (Files.exists(Path.of(x))) success
             else failure(f"File doesn't exists")
           )
-          .action((x, c) => c.copy(jsonConfigFile = x))
+          .action((x, c) => c.copy(jsonConfigFile = Paths.get(x).toFile()))
           .text("A json config file for RMLRunner to configure RMLStreamer"),
         head("help").text(
           "A runner application for executing RMLStreamer using the config file given by the Orchestrator"
