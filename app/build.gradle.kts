@@ -65,7 +65,7 @@ testing {
 
 application {
     // Define the main class for the application.
-    mainClass.set("RMLRunner.App")
+    mainClass.set("RMLInjector.App")
 }
 
 tasks.shadowJar{

@@ -1,4 +1,4 @@
-package RMLRunner
+package RMLInjector
 
 import com.fasterxml.jackson.databind.JsonNode
 import scala.jdk.CollectionConverters._
@@ -46,5 +46,6 @@ object IOType {
       case "tcp"  => TcpIO(config.get("hostname").asText())
       case _ => StdIO()
     }
+
   }
 }

@@ -1,4 +1,4 @@
-package RMLRunner.vocabulary
+package RMLInjector.vocabulary
 
 object RMLVoc {
   val namespace = ("rml", "http://semweb.mmlab.be/ns/rml#");

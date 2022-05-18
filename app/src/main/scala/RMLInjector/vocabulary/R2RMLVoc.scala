@@ -1,4 +1,4 @@
-package io.rml.framework.core.vocabulary
+package RMLInjector.vocabulary
 
 /**
   * MIT License

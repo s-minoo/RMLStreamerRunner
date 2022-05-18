@@ -1,4 +1,4 @@
-package RMLRunner.vocabulary
+package RMLInjector.vocabulary
 
 object RMLSVoc {
 

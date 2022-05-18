@@ -1,6 +1,5 @@
-package RMLRunner
+package RMLInjector
 
-import io.rml.framework.core.vocabulary.R2RMLVoc
 import org.apache.jena.rdf.model.Model
 import org.apache.jena.rdf.model.ModelFactory
 import org.apache.jena.rdf.model.RDFNode
@@ -14,11 +13,11 @@ import java.io.Reader
 import java.nio.file.Files
 import java.nio.file.Paths
 
-import vocabulary.RMLVoc
-import RMLRunner.vocabulary.RMLSVoc
 import java.nio.file.OpenOption
 import java.nio.file.StandardOpenOption
 import java.io.Writer
+import RMLInjector.IOType
+import RMLInjector.vocabulary._
 
 case class RMLHandler(val baseURI: String) {
 
@@ -53,7 +52,6 @@ case class RMLHandler(val baseURI: String) {
   def updateModel(
       model: Model,
       inputType: IOType,
-      outputType: IOType,
       writer: Writer,
   ): Unit = {
     val sourceProperty = model.createProperty(RMLVoc.Property.SOURCE)
@@ -63,6 +61,8 @@ case class RMLHandler(val baseURI: String) {
         sourceProperty
       )
       .toList()
+
+
 
     // Remove the old rml:source predicates from the mapping file
     logicalSources.forEach(s => {
