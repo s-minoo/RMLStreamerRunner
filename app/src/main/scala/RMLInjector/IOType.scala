@@ -11,8 +11,7 @@ sealed trait IOType
 case class KafkaIO(
     hostIp: List[String],
     topic: String,
-    groupId: Option[String],
-    partitionId: Option[String]
+    groupId: Option[String]
 ) extends IOType
 case class TcpIO(hostIp: String) extends IOType
 case class FileIO(fileName: String) extends IOType
@@ -31,9 +30,8 @@ object IOType {
     val topic = config.get("topic").get("name").asText()
 
     val groupId = Option(config.get("consumer")).map(_.get("groupId").asText())
-    val partitionId = Option(config.get("producer")).map(_.get("partitionId").asText())
 
-    KafkaIO(hostIps, topic, groupId, partitionId)
+    KafkaIO(hostIps, topic, groupId)
   }
 
   def apply(opt: JsonNode): IOType = {

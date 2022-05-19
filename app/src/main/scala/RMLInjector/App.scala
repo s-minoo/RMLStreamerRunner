@@ -66,7 +66,7 @@ object App {
   }
 
   def parseRMLCLI(node: JsonNode): RMLStreamerCLIConfig = {
-    val output = IOType(node.get("args").get("outputStream"))
+    val output = IOType(node.get("args").get("outputStream").get(0))
     val mappingFile = node.get("args").get("rmlmapping").asText()
     val config = node.get("processorConfig").get("config")
     val bulk =
@@ -99,15 +99,16 @@ object App {
     val objMapper = new ObjectMapper()
 
     val jsonTree = objMapper.readTree(cli.jsonConfigFile)
-    val inputConfig = jsonTree.get("args").get("inputStream")
+    val inputConfig = jsonTree.get("args").get("inputStream").get(0)
     val inputType = IOType(inputConfig)
     val rmlcliargs = parseRMLCLI(jsonTree)
     val handler = RMLHandler() 
     val model = handler.parse(rmlcliargs.mappingFile)
-    val writer = Files.newBufferedWriter(Paths.get(rmlcliargs.mappingFile), StandardOpenOption.TRUNCATE_EXISTING) 
+    val tempFilePath = Files.createTempFile(null,"-mapping.ttl")
+    val writer = Files.newBufferedWriter(tempFilePath, StandardOpenOption.TRUNCATE_EXISTING) 
 
     handler.updateModel(model, inputType, writer)
-    var args = Seq("-m", rmlcliargs.mappingFile) 
+    var args = Seq("-m", tempFilePath.toString()) 
 
     if (rmlcliargs.bulk) {
       args +:= "--bulk"
@@ -124,12 +125,14 @@ object App {
 
     rmlcliargs.output match {
       case FileIO(fileName) => args ++= Seq("toFile", "-o", fileName)
-      case KafkaIO(hostIp, topic, groupId, partitionId) => 
+      case KafkaIO(hostIp, topic, groupId) => 
         args ++= Seq("toKafka", "-b", hostIp.mkString(","), "-t", topic)
       case TcpIO(hostIp) => 
         args ++= Seq("toTCPSocket", "-s", hostIp)
       case StdIO() => ""
     }
+    
+    args.mkString(" ")
 
     
   }

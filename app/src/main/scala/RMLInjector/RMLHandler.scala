@@ -89,7 +89,7 @@ case class RMLHandler(val baseURI: String) {
           case FileIO(fileName) => {
             s.addProperty(sourceProperty, fileName)
           }
-          case KafkaIO(hostIp, topic, groupId, partitionId) => {
+          case KafkaIO(hostIp, topic, groupId) => {
             val sourceBNode = model.createResource()
             s.addProperty(sourceProperty, sourceBNode)
             sourceBNode.addProperty(

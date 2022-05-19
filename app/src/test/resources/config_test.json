@@ -21,7 +21,7 @@
         ]
     },
     "args": {
-        "rmlmapping": "mapping.ttl",
+        "rmlmapping": "src/test/resources/mapping.ttl",
         "inputStream": [
             {
                 "id": "rmls:logicalSource#1",

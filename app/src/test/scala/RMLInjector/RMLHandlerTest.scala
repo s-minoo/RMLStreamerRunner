@@ -54,8 +54,8 @@ class RMLHandlerTest extends AnyFlatSpec {
     val parsedRMLModel = loadModel()
     val handler = RMLHandler()
     val input =
-      KafkaIO(List("localhost:9000"), "epicTopic", Some("groupaUno"), None)
-    val output = KafkaIO(List("localhost:9000"), "badoutput", None, None)
+      KafkaIO(List("localhost:9000"), "epicTopic", Some("groupaUno"))
+    val output = KafkaIO(List("localhost:9000"), "badoutput", None)
 
     handler.updateModel(parsedRMLModel, input, new OutputStreamWriter(System.out))
     val expectedModel = handler.parse(Source.fromResource("expected.ttl").bufferedReader())
