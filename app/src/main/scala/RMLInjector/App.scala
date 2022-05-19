@@ -16,6 +16,8 @@ import sys.process._
 import java.nio.file.Paths
 import java.nio.file.StandardOpenOption
 import java.io.File
+import java.io.OutputStreamWriter
+import java.io.FileWriter
 
 case class RunnerCLIConfig(
     jsonConfigFile: File = new File(""),
@@ -29,7 +31,7 @@ case class RMLStreamerCLIConfig(
     disableParal: Boolean = false,
     bulk: Boolean = false,
     jsonLD: Boolean = false,
-    output: IOType = StdIO(), 
+    output: IOType = StdIO()
 )
 
 object App {
@@ -53,13 +55,14 @@ object App {
           .text("A json config file for RMLRunner to configure RMLStreamer"),
         head("help").text(
           "A runner application for executing RMLStreamer using the config file given by the Orchestrator"
-        ), 
-        opt[String]('o', "output") 
-        .optional()
-        .valueName("<filepath>")
-        .action((x, c) => c.copy(outputFile = x))
-        .text("The output file where the cli args needed to run RMLStreamer will be written to")
-        
+        ),
+        opt[String]('o', "output")
+          .optional()
+          .valueName("<filepath>")
+          .action((x, c) => c.copy(outputFile = x))
+          .text(
+            "The output file where the cli args needed to run RMLStreamer will be written to"
+          )
       )
     }
     parser
@@ -89,7 +92,7 @@ object App {
       baseIRI,
       disableParal,
       bulk,
-      jsonLD, 
+      jsonLD,
       output
     )
 
@@ -102,39 +105,49 @@ object App {
     val inputConfig = jsonTree.get("args").get("inputStream").get(0)
     val inputType = IOType(inputConfig)
     val rmlcliargs = parseRMLCLI(jsonTree)
-    val handler = RMLHandler() 
+    val handler = RMLHandler()
     val model = handler.parse(rmlcliargs.mappingFile)
-    val tempFilePath = Files.createTempFile(null,"-mapping.ttl")
-    val writer = Files.newBufferedWriter(tempFilePath, StandardOpenOption.TRUNCATE_EXISTING) 
+    val tempFilePath = Files.createTempFile(null, "-mapping.ttl")
+    val writer = Files.newBufferedWriter(
+      tempFilePath,
+      StandardOpenOption.TRUNCATE_EXISTING
+    )
 
     handler.updateModel(model, inputType, writer)
-    var args = Seq("-m", tempFilePath.toString()) 
-
-    if (rmlcliargs.bulk) {
-      args +:= "--bulk"
-    }
-
-    if (rmlcliargs.jsonLD){
-      args +:= "--json-ld"
-    }
-
-    if (rmlcliargs.disableParal){
-      args +:= "--disable-local-parallel"
-    }
-
+    var args = Seq[String]()
 
     rmlcliargs.output match {
       case FileIO(fileName) => args ++= Seq("toFile", "-o", fileName)
-      case KafkaIO(hostIp, topic, groupId) => 
+      case KafkaIO(hostIp, topic, groupId) =>
         args ++= Seq("toKafka", "-b", hostIp.mkString(","), "-t", topic)
-      case TcpIO(hostIp) => 
+      case TcpIO(hostIp) =>
         args ++= Seq("toTCPSocket", "-s", hostIp)
       case StdIO() => ""
     }
-    
+
+    if (rmlcliargs.bulk) {
+      args :+= "--bulk"
+    }
+
+    if (rmlcliargs.jsonLD) {
+      args :+= "--json-ld"
+    }
+
+    if (rmlcliargs.disableParal) {
+      args :+= "--disable-local-parallel"
+    }
+
+    val output_File = Paths.get(cli.outputFile).toFile()
+    output_File.createNewFile()
+
+    val output_writer = new FileWriter(output_File)
+    output_writer.write(s"MAPPING_FILE=\"${tempFilePath.toString()}\"\n")
+    output_writer.write(s"CLI_ARGS=\"${args.mkString(" ")}\"\n")
+    output_writer.flush()
+    output_writer.close()
+
     args.mkString(" ")
 
-    
   }
 
   def main(args: Array[String]): Unit = {

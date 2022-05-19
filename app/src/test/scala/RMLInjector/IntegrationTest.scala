@@ -18,9 +18,9 @@ class IntegrationTest extends AnyFlatSpec {
     val file = getJsonConfig()
     assert(file.exists(), s"File doesn't exists: ${file}")
     val runnerConfig = RunnerCLIConfig(file)
-    val cli_args = App.handleRunnerCLI(runnerConfig).split(" ").patch(2, Nil, 1).toSeq
+    val cli_args = App.handleRunnerCLI(runnerConfig).split(" ").toSeq
 
-    val expected = Seq("--bulk", "-m", "toKafka", "-b", "localhost:9092", "-t", "epicTopic")
+    val expected = Seq("toKafka", "-b", "localhost:9092", "-t", "epicTopic", "--bulk")
 
 
     assert(expected.equals(cli_args), s"Expected: ${expected}, Output: ${cli_args}")
