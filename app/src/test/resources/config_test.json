@@ -18,7 +18,8 @@
                 "id": "outputStream",
                 "type": "channel"
             }
-        ]
+        ],
+        "location": "./"
     },
     "args": {
         "rmlmapping": "src/test/resources/mapping.ttl",

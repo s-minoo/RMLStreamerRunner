@@ -31,6 +31,7 @@ EOF
 #  Handle command line arguments
 #-----------------------------------------------------------------------
 
+
 POSITIONAL=()
 while [[ $# -gt 0 ]]; do
   key="$1"
@@ -54,8 +55,8 @@ while [[ $# -gt 0 ]]; do
       ;;
   esac
 done
-set -- "${POSITIONAL[@]}" # restore positional parameters
 
+set -- "${POSITIONAL[@]}" # restore positional parameters
 
 ${RUNNER_CONFIG:?Missing runner config -c option. Use -h for help} 2>/dev/null 
 
@@ -69,9 +70,9 @@ fi
 
 RMLSTREAMER_CLI_TXT=$(mktemp)
 
-
-java -jar RMLInjector.jar -c ${RUNNER_CONFIG} -o ${RMLSTREAMER_CLI_TXT} 2>/dev/null
+java -jar RMLInjector.jar -c ${RUNNER_CONFIG} -o ${RMLSTREAMER_CLI_TXT} 
 CLI_ARGS=$(cat ${RMLSTREAMER_CLI_TXT})
+
 
 . ${RMLSTREAMER_CLI_TXT}
 echo "RML mapping document has been updated!"
@@ -96,12 +97,4 @@ echo "Done"
 divider
 echo "Executing RMLSTreamer on flink..."
 docker exec -d -t -i "${JM_CONTAINER}" flink run -d -c ${JOB_CLASS_NAME} /job.jar ${CLI_ARGS}  -m ${MAPPING_FILE_CONTAINER_PATH} 
-
-
-
-
-
-
-
-
 
