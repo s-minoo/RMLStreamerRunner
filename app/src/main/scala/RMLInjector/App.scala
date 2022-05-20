@@ -101,12 +101,23 @@ object App {
   def handleRunnerCLI(cli: RunnerCLIConfig) = {
     val objMapper = new ObjectMapper()
 
+
+
     val jsonTree = objMapper.readTree(cli.jsonConfigFile)
     val inputConfig = jsonTree.get("args").get("inputStream").get(0)
     val inputType = IOType(inputConfig)
     val rmlcliargs = parseRMLCLI(jsonTree)
+
+    val mappingFile = Option(
+        jsonTree
+          .get("processorConfig")
+          .get("location")
+      )
+      .map(_.asText() + "/")
+      .getOrElse("") + rmlcliargs.mappingFile
+
     val handler = RMLHandler()
-    val model = handler.parse(rmlcliargs.mappingFile)
+    val model = handler.parse(mappingFile)
     val tempFilePath = Files.createTempFile(null, "-mapping.ttl")
     val writer = Files.newBufferedWriter(
       tempFilePath,

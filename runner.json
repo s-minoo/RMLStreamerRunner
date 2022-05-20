@@ -1,0 +1,13 @@
+
+  {
+    "id": "RMLStreamerRunner",
+    "runnerScript": "./runner.sh -c {config}",
+    "canUseChannel": [
+      "kafka" 
+    ],
+    "canUseSerialization": [
+      "turtle", "json"
+    ],
+    "requiredFields": [
+    ]
+  }
