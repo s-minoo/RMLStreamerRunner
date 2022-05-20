@@ -31,6 +31,9 @@ EOF
 #  Handle command line arguments
 #-----------------------------------------------------------------------
 
+function cleanupDocker(){
+  docker-compose down
+}
 
 POSITIONAL=()
 while [[ $# -gt 0 ]]; do
@@ -82,6 +85,11 @@ divider
 
 # Docker start-ups for RMLStreamer
 docker-compose up -d 
+
+
+trap cleanupDocker 1 2 3 6 15 9 
+
+
 JOB_CLASS_NAME="io.rml.framework.Main"
 JM_CONTAINER=$(docker ps --filter name=jobmanager --format={{.ID}})
 docker cp RMLStreamer*.jar  "${JM_CONTAINER}":/job.jar
