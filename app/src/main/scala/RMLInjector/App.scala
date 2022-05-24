@@ -28,6 +28,8 @@ case class RMLStreamerCLIConfig(
     mappingFile: String,
     jobName: Option[String] = None,
     baseIRI: Option[String] = None,
+    hostName: Option[String] = None,
+    dockerName: Option[String] = None,
     disableParal: Boolean = false,
     bulk: Boolean = false,
     jsonLD: Boolean = false,
@@ -86,10 +88,18 @@ object App {
     val baseIRI =
       Option(config.get("baseIRI")).map(_.asText())
 
+    val hostName =
+      Option(config.get("hostName")).map(_.asText())
+    val dockerName =
+      Option(config.get("dockerName")).map(_.asText())
+
+
     RMLStreamerCLIConfig(
       mappingFile,
       jobName,
       baseIRI,
+      hostName,
+      dockerName,
       disableParal,
       bulk,
       jsonLD,
@@ -124,13 +134,19 @@ object App {
       StandardOpenOption.TRUNCATE_EXISTING
     )
 
-    handler.updateModel(model, inputType, writer)
+    val transformHostName = (x: String) => 
+      rmlcliargs.hostName.filter(_ == x).flatMap(x => rmlcliargs.dockerName).getOrElse(x);
+
+    handler.updateModel(model, inputType, writer, transformHostName)
     var args = Seq[String]()
+
+    
+
 
     rmlcliargs.output match {
       case FileIO(fileName) => args ++= Seq("toFile", "-o", fileName)
       case KafkaIO(hostIp, topic, groupId) =>
-        args ++= Seq("toKafka", "-b", hostIp.mkString(","), "-t", topic)
+        args ++= Seq("toKafka", "-b", hostIp.map(transformHostName).mkString(","), "-t", topic)
       case TcpIO(hostIp) =>
         args ++= Seq("toTCPSocket", "-s", hostIp)
       case StdIO() => ""

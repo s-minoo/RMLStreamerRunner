@@ -53,6 +53,7 @@ case class RMLHandler(val baseURI: String) {
       model: Model,
       inputType: IOType,
       writer: Writer,
+      mapHostName: String => String,
   ): Unit = {
     val sourceProperty = model.createProperty(RMLVoc.Property.SOURCE)
 
@@ -98,7 +99,7 @@ case class RMLHandler(val baseURI: String) {
             )
             sourceBNode.addProperty(
               model.createProperty(RMLSVoc.Property.BROKER),
-              hostIp.head
+              mapHostName(hostIp.head)
             )
             sourceBNode.addProperty(
               model.createProperty(RMLSVoc.Property.GROUPID),

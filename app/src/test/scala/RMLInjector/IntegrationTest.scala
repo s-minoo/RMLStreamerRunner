@@ -20,12 +20,10 @@ class IntegrationTest extends AnyFlatSpec {
     val runnerConfig = RunnerCLIConfig(file)
     val cli_args = App.handleRunnerCLI(runnerConfig).split(" ").toSeq
 
-    val expected = Seq("toKafka", "-b", "localhost:9092", "-t", "epicTopic", "--bulk")
+    val expected = Seq("toKafka", "-b", "broker:9092", "-t", "epicTopic", "--bulk")
 
 
     assert(expected.equals(cli_args), s"Expected: ${expected}, Output: ${cli_args}")
-    
-
   }
 
 }
