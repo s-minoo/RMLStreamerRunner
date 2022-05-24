@@ -32,6 +32,7 @@ EOF
 #-----------------------------------------------------------------------
 
 function cleanupDocker(){
+  echo "shutting down"
   docker-compose down
 }
 
@@ -87,7 +88,7 @@ divider
 docker-compose up -d 
 
 
-trap cleanupDocker 1 2 3 6 15 9 
+trap cleanupDocker exit 1 2 3 6 11 15 9 
 
 
 JOB_CLASS_NAME="io.rml.framework.Main"
@@ -100,9 +101,11 @@ MAPPING_FILE_CONTAINER_PATH="${BASE_DATA_PATH}${MAPPING_FILE_NAME}"
 
 
 echo "Copying required files into docker containers..." 
+echo docker cp $MAPPING_FILE "${JM_CONTAINER}:${BASE_DATA_PATH}"
 docker cp $MAPPING_FILE "${JM_CONTAINER}:${BASE_DATA_PATH}"
 echo "Done"
 divider
+
 echo "Executing RMLSTreamer on flink..."
-docker exec -d -t -i "${JM_CONTAINER}" flink run -d -c ${JOB_CLASS_NAME} /job.jar ${CLI_ARGS}  -m ${MAPPING_FILE_CONTAINER_PATH} 
+docker exec -t -i "${JM_CONTAINER}" flink run -c ${JOB_CLASS_NAME} /job.jar ${CLI_ARGS}  -m ${MAPPING_FILE_CONTAINER_PATH} 
 

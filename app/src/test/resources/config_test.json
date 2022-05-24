@@ -3,7 +3,9 @@
         "id": "RMLStep",
         "runnerId": "RMLStreamerRunner",
         "config": {
-            "bulk": true
+            "bulk": true,
+            "hostName": "localhost:19092",
+            "dockerName": "broker:9092"
         },
         "args": [
             {
@@ -37,7 +39,7 @@
                     "producer": {},
                     "broker": {
                         "hosts": [
-                            "localhost:9092"
+                            "localhost:19092"
                         ],
                         "clientId": "myClient"
                     }
@@ -58,7 +60,7 @@
                     "producer": {},
                     "broker": {
                         "hosts": [
-                            "localhost:9092"
+                            "localhost:19092"
                         ],
                         "clientId": "myClient"
                     }

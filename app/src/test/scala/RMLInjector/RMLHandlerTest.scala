@@ -57,12 +57,10 @@ class RMLHandlerTest extends AnyFlatSpec {
       KafkaIO(List("localhost:9000"), "epicTopic", Some("groupaUno"))
     val output = KafkaIO(List("localhost:9000"), "badoutput", None)
 
-    handler.updateModel(parsedRMLModel, input, new OutputStreamWriter(System.out))
+    handler.updateModel(parsedRMLModel, input, new OutputStreamWriter(System.out), x => x)
     val expectedModel = handler.parse(Source.fromResource("expected.ttl").bufferedReader())
     
     assert(expectedModel.isIsomorphicWith(parsedRMLModel))
-
-
   }
 
 }

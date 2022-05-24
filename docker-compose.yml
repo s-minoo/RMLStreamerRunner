@@ -2,6 +2,7 @@ version: '3'
 services:
 
   jobmanager:
+    # network_mode: "host"
     image: flink:1.14.0-scala_2.11-java11
     expose:
       - "6123"
@@ -12,6 +13,9 @@ services:
       - JOB_MANAGER_RPC_ADDRESS=jobmanager
     volumes:
       - data:/mnt/data
+    networks:
+      - kafka
+      - default
 
   taskmanager:
     image: flink:1.14.0-scala_2.11-java11
@@ -27,7 +31,14 @@ services:
       - JOB_MANAGER_RPC_ADDRESS=jobmanager
     volumes:
       - data:/mnt/data
+    networks:
+      - kafka
+      - default
 
 volumes:
   # This volume will show with 'docker volume ls' as 'docker_data'
   data:
+
+networks:
+  kafka:
+    external: true
