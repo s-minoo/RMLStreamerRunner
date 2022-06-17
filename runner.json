@@ -6,7 +6,7 @@
       "kafka" 
     ],
     "canUseSerialization": [
-      "turtle", "json"
+      "turtle", "json", "xml"
     ],
     "requiredFields": [
     ]
