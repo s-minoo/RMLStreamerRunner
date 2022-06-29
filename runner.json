@@ -1,6 +1,7 @@
 
   {
     "id": "RMLStreamerRunner",
+    "start": "bash build.sh",
     "runnerScript": "./runner.sh -c {config}",
     "canUseChannel": [
       "kafka" 
