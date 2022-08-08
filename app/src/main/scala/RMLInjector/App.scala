@@ -73,8 +73,10 @@ object App {
   }
 
   def findByType(it: JsonNode, ty: String): JsonNode = {
-    for (i <- 0 to it.size()) {
-      val node = it.get(0)
+    var headers = it.fieldNames()
+    while (headers.hasNext()) {
+      val i = headers.next()
+      val node = it.get(i)
 
       if (node.get("type").asText("") == ty) return node;
     }
@@ -91,7 +93,7 @@ object App {
 
     val output = IOType(outputJson)
 
-    val mappingFile = node.get("args").get("rmlmapping").asText()
+    val mappingFile = node.get("args").get("rmlmapping").get("value").asText()
     val config = node.get("processorConfig").get("config")
     val bulk =
       Option(config.get("bulk")).map(_.asBoolean()).getOrElse(false)

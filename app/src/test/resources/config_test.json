@@ -24,7 +24,10 @@
         "location": "./"
     },
     "args": {
-        "rmlmapping": "src/test/resources/mapping.ttl",
+        "rmlmapping": {
+            "value": "src/test/resources/mapping.ttl",
+            "type": "Plain"
+        }, 
         "inputStream": {
             "type": "StreamReader",
             "fields": {
