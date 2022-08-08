@@ -16,6 +16,7 @@ class IntegrationTest extends AnyFlatSpec {
 
   "Runner config" should "be parsed without error" in {
     val file = getJsonConfig()
+    println("klqmsdjfmlajeifmlkj")
     assert(file.exists(), s"File doesn't exists: ${file}")
     val runnerConfig = RunnerCLIConfig(file)
     val cli_args = App.handleRunnerCLI(runnerConfig).split(" ").toSeq

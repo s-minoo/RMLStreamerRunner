@@ -45,6 +45,7 @@ dependencies {
 }
 
 testing {
+    
     suites {
         // Configure the built-in test suite
         val test by getting(JvmTestSuite::class) {
@@ -84,3 +85,9 @@ tasks.jar {
     }
     archiveBaseName.set(rootProject.name)
 }
+tasks.test{
+    testLogging.showExceptions = true
+    testLogging.showStandardStreams = true
+    
+}
+
