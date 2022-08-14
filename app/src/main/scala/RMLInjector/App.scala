@@ -18,6 +18,8 @@ import java.nio.file.StandardOpenOption
 import java.io.File
 import java.io.OutputStreamWriter
 import java.io.FileWriter
+import com.fasterxml.jackson.databind.node.ArrayNode
+import com.fasterxml.jackson.databind.node.ObjectNode
 
 case class RunnerCLIConfig(
     jsonConfigFile: File = new File(""),
@@ -70,9 +72,28 @@ object App {
     parser
   }
 
+  def findByType(it: JsonNode, ty: String): JsonNode = {
+    var headers = it.fieldNames()
+    while (headers.hasNext()) {
+      val i = headers.next()
+      val node = it.get(i)
+
+      if (node.get("type").asText("") == ty) return node;
+    }
+
+    throw new RuntimeException("nope")
+  }
+
   def parseRMLCLI(node: JsonNode): RMLStreamerCLIConfig = {
-    val output = IOType(node.get("args").get("outputStream").get(0))
-    val mappingFile = node.get("args").get("rmlmapping").asText()
+    val streamReader = findByType(node.get("args"), "StreamWriter")
+    val fieldName = streamReader.get("fields").fieldNames().next()
+    val outputJson =
+      streamReader.get("fields").get(fieldName).asInstanceOf[ObjectNode]
+    outputJson.put("id", fieldName)
+
+    val output = IOType(outputJson)
+
+    val mappingFile = node.get("args").get("rmlmapping").get("value").asText()
     val config = node.get("processorConfig").get("config")
     val bulk =
       Option(config.get("bulk")).map(_.asBoolean()).getOrElse(false)
@@ -93,7 +114,6 @@ object App {
     val dockerName =
       Option(config.get("dockerName")).map(_.asText())
 
-
     RMLStreamerCLIConfig(
       mappingFile,
       jobName,
@@ -105,24 +125,27 @@ object App {
       jsonLD,
       output
     )
-
   }
 
   def handleRunnerCLI(cli: RunnerCLIConfig) = {
     val objMapper = new ObjectMapper()
 
-
-
     val jsonTree = objMapper.readTree(cli.jsonConfigFile)
-    val inputConfig = jsonTree.get("args").get("inputStream").get(0)
+
+    val streamReader = findByType(jsonTree.get("args"), "StreamReader")
+    val fieldName = streamReader.get("fields").fieldNames().next()
+    val inputConfig =
+      streamReader.get("fields").get(fieldName).asInstanceOf[ObjectNode]
+    inputConfig.put("id", fieldName)
+
     val inputType = IOType(inputConfig)
     val rmlcliargs = parseRMLCLI(jsonTree)
 
     val mappingFile = Option(
-        jsonTree
-          .get("processorConfig")
-          .get("location")
-      )
+      jsonTree
+        .get("processorConfig")
+        .get("location")
+    )
       .map(_.asText() + "/")
       .getOrElse("") + rmlcliargs.mappingFile
 
@@ -134,19 +157,25 @@ object App {
       StandardOpenOption.TRUNCATE_EXISTING
     )
 
-    val transformHostName = (x: String) => 
-      rmlcliargs.hostName.filter(_ == x).flatMap(x => rmlcliargs.dockerName).getOrElse(x);
+    val transformHostName = (x: String) =>
+      rmlcliargs.hostName
+        .filter(_ == x)
+        .flatMap(x => rmlcliargs.dockerName)
+        .getOrElse(x);
 
     handler.updateModel(model, inputType, writer, transformHostName)
     var args = Seq[String]()
 
-    
-
-
     rmlcliargs.output match {
       case FileIO(fileName) => args ++= Seq("toFile", "-o", fileName)
       case KafkaIO(hostIp, topic, groupId) =>
-        args ++= Seq("toKafka", "-b", hostIp.map(transformHostName).mkString(","), "-t", topic)
+        args ++= Seq(
+          "toKafka",
+          "-b",
+          hostIp.map(transformHostName).mkString(","),
+          "-t",
+          topic
+        )
       case TcpIO(hostIp) =>
         args ++= Seq("toTCPSocket", "-s", hostIp)
       case StdIO() => ""

@@ -14,58 +14,65 @@
             },
             {
                 "id": "inputStream",
-                "type": "channel"
+                "type": "StreamReader"
             },
             {
                 "id": "outputStream",
-                "type": "channel"
+                "type": "StreamWriter"
             }
         ],
         "location": "./"
     },
     "args": {
-        "rmlmapping": "src/test/resources/mapping.ttl",
-        "inputStream": [
-            {
-                "id": "rmls:logicalSource#1",
-                "type": "kafka",
-                "config": {
-                    "topic": {
-                        "name": "epicTopic"
-                    },
-                    "consumer": {
-                        "groupId": "group1"
-                    },
-                    "producer": {},
-                    "broker": {
-                        "hosts": [
-                            "localhost:19092"
-                        ],
-                        "clientId": "myClient"
+        "rmlmapping": {
+            "value": "src/test/resources/mapping.ttl",
+            "type": "Plain"
+        }, 
+        "inputStream": {
+            "type": "StreamReader",
+            "fields": {
+                "rmls:logicalSource#1": {
+                    "type": "kafka",
+                    "config": {
+                        "topic": {
+                            "name": "epicTopic"
+                        },
+                        "consumer": {
+                            "groupId": "group1"
+                        },
+                        "producer": {},
+                        "broker": {
+                            "hosts": [
+                                "localhost:19092"
+                            ],
+                            "clientId": "myClient"
+                        }
                     }
                 }
             }
-        ],
-        "outputStream": [
-            {
-                "id": "rmls:logicaltarget#1",
-                "type": "kafka",
-                "config": {
-                    "topic": {
-                        "name": "epicTopic"
-                    },
-                    "consumer": {
-                        "groupId": "group1"
-                    },
-                    "producer": {},
-                    "broker": {
-                        "hosts": [
-                            "localhost:19092"
-                        ],
-                        "clientId": "myClient"
+        },
+        "outputStream": {
+            "type": "StreamWriter",
+            "fields": {
+                "rmls:logicaltarget#1": {
+                    "type": "kafka",
+                    "config": {
+                        "topic": {
+                            "name": "epicTopic"
+                        },
+                        "consumer": {
+                            "groupId": "group1"
+                        },
+                        "producer": {},
+                        "broker": {
+                            "hosts": [
+                                "localhost:19092"
+                            ],
+                            "clientId": "myClient"
+                        }
                     }
                 }
             }
-        ]
+        }
     }
 }
