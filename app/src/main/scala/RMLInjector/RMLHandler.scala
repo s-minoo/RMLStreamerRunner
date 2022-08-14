@@ -69,7 +69,7 @@ case class RMLHandler(val baseURI: String) {
     logicalSources.forEach(s => {
       val sourceBNode = model.getProperty(s, sourceProperty)
       model.removeAll(s, sourceProperty, null)
-      model.removeAll(sourceBNode.getObject().asResource(), null, null)
+      sourceBNode.remove()
     })
 
     // and add the new rml:source with the given inputType
